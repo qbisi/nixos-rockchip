@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: GPL-2.0+
+#include "rk3399-u-boot.dtsi"
+#include "rk3399-sdram-lpddr4-100.dtsi"
+
+/ {
+	chosen {
+		u-boot,spl-boot-order = "same-as-spl", &sdhci, &sdmmc;
+	};
+
+	smbios {
+		compatible = "u-boot,sysinfo-smbios";
+	
+		smbios {
+			system {
+				manufacturer = "Bozz";
+				product = "sw799a";
+			};
+	
+			baseboard {
+				manufacturer = "Bozz";
+				product = "sw799a";
+			};
+	
+			chassis {
+				manufacturer = "Bozz";
+			};
+		};
+	};
+};
+
+&vdd_log {
+	regulator-init-microvolt = <950000>;
+};
