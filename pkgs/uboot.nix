@@ -32,6 +32,7 @@ in
   uboot-bozz-sw799 = ubootRK3399 { Device_Tree = "rk3399-bozz-sw799"; };
   uboot-cdhx-rb30 = ubootRK3399 { Device_Tree = "rk3399-cdhx-rb30"; };
   uboot-eaio-3399j = ubootRK3399 { Device_Tree = "rk3399-eaio-3399j"; };
+  uboot-nanopi-m4-2gb = ubootRK3399 { Device_Tree = "rk3399-nanopi-m4-2gb"; };
   uboottest = buildUBoot {
 
     version = "2024.04";
