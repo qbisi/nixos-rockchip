@@ -29,6 +29,7 @@ let
 in
 {
   inherit ubootRK3399;
+  uboot-fine3399 = ubootRK3399 { Device_Tree = "rk3399-fine3399"; };
   uboot-bozz-sw799 = ubootRK3399 { Device_Tree = "rk3399-bozz-sw799"; };
   uboot-cdhx-rb30 = ubootRK3399 { Device_Tree = "rk3399-cdhx-rb30"; };
   uboot-eaio-3399j = ubootRK3399 { Device_Tree = "rk3399-eaio-3399j"; };
