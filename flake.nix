@@ -13,7 +13,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     impermanence.url = "github:nix-community/impermanence";
     disko = {
-      url = "github:nix-community/disko";
+      url = "github:qbisi/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
