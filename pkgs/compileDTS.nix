@@ -17,9 +17,9 @@ in
       name = "bozz-sw799.dtb";
       dtsFile = ../dts/rk3399-bozz-sw799.dts;
       includePaths = [
-        "${dtsi}"
         "${head}/include"
         "${head}/arch/arm64/boot/dts/rockchip"
+        "${dtsi}"
       ];
     };
   dtb-cdhx-rb30 = deviceTree.compileDTS
