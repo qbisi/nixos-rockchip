@@ -26,6 +26,7 @@
         overlays = [
           (import ./overlay/buildUBoot.nix)
           (import ./overlay/extendLib.nix)
+          (import ./overlay/extendPkgs.nix)
         ];
       };
       inherit (pkgs) lib;
