@@ -74,9 +74,7 @@ in
 
   users.users.root = {
     password = "root";
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE0V3K8tWwzwoiu6V70IDGKKKF5JeulPOoBXNsKnRnjg qbisi@ody"
-    ];
+    openssh.authorizedKeys.keyFiles = lib.fileset.toList ../keys;
   };
 
   environment.systemPackages = with pkgs; [
