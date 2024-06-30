@@ -11,9 +11,10 @@
   fetchFromGitHub,
   linuxManualConfig,
   ubootTools,
+  gcc10Stdenv,
   ...
 }:
-(linuxManualConfig rec {
+((linuxManualConfig rec {
   modDirVersion = "6.1.43";
   version = "${modDirVersion}-xunlong-rk3588";
   extraMeta.branch = "6.1";
@@ -39,7 +40,8 @@
   configfile = ./config;
   allowImportFromDerivation = true;
 })
+.override { stdenv = gcc10Stdenv;})
 .overrideAttrs (old: {
-  name = "k"; # dodge uboot length limits
+  # name = "k"; # dodge uboot length limits
   nativeBuildInputs = old.nativeBuildInputs ++ [ubootTools];
 })
