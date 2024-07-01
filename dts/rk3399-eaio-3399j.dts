@@ -1023,3 +1023,16 @@
 		<4 RK_PC1 1 &pcfg_pull_none_12ma>,
 		<4 RK_PC0 1 &pcfg_pull_none_12ma>;
 };
+
+&display_subsystem {
+	route {
+		route_hdmi: route-hdmi {
+			status = "okay";
+			logo,uboot = "logo.bmp";
+			logo,kernel = "logo_kernel.bmp";
+			logo,mode = "center";
+			charge_logo,mode = "center";
+			connect = <&vopb_out_hdmi>;
+		};
+	};
+};
