@@ -1,30 +1,37 @@
-{ patchdts, buildLinux, fetchurl, fetchFromGitHub, fetchgit, gcc10Stdenv, ubootTools, ... }:
+{ lib, patchdts, buildLinux, fetchurl, fetchFromGitHub, fetchgit, gcc10Stdenv, ubootTools, makeLinuxHeaders, ... }:
 let
-  version = "6.1.57-rkbsp-joshua";
-  modDirVersion = "6.1.57";
-  srcname = "kernel-6.1-2024_03_01";
-  src = fetchurl {
-    url = "https://github.com/JeffyCN/mirrors/archive/refs/tags/${srcname}.tar.gz";
-    sha256 = "sha256-LA/8JUrLeASRyu6CqkqbcNV3/D201JLqNxBbZB5fZPc=";
+  version = "6.1.75-rkbsp-joshua";
+  modDirVersion = "6.1.75";
+  src = fetchFromGitHub {
+    owner = "Joshua-Riek";
+    repo = "linux-rockchip";
+    rev = "Ubuntu-rockchip-6.1.0-1018.18";
+    hash = "sha256-rwzvg3N39qlzHi6Yj89p6g6UxVkbspBaVaj6q3m2hXQ=";
   };
-  kernelPatches = [
-    {
-      name = "rkbsp6.1_patch";
-      patch = fetchurl {
-        url = "https://github.com/wyf9661/rkbsp6.1-patch/releases/download/Nightly/rkbsp6.1_patch.tar.gz";
-        sha256 = "sha256-kVfs7FmLU9KrqhqPDOaOqdeB0C3oyDgEXP0s0epDAlA=";
-      };
-    }
-    {
-      name = "patchdts";
-      patch = patchdts;
-    }
-  ];
-  defconfig = "rockchip_defconfig";
+  # kernelPatches = [
+  #   {
+  #     name = "patchdts";
+  #     patch = patchdts;
+  #   }
+  # ];
+  defconfig = "rockchip_linux_defconfig";
+  structuredExtraConfig = with lib.kernel; {
+    BTRFS_FS = yes;
+  };
 in
-buildLinux {
-  inherit src modDirVersion version defconfig kernelPatches;
-  stdenv = gcc10Stdenv;
-  autoModules = false;
-  # enableCommonConfig = false ;
+{
+  linux-aarch64-rkbsp-joshua = buildLinux 
+    {
+      inherit src modDirVersion version defconfig;
+      # inherit kernelPatches;
+      inherit structuredExtraConfig;
+      stdenv = gcc10Stdenv;
+      autoModules = false;
+      # enableCommonConfig = false ;
+    };
+  linux-aarch64-rkbsp-joshua-headers = makeLinuxHeaders 
+    {
+      inherit src version;
+    };
 }
+
