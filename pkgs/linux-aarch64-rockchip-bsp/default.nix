@@ -1,4 +1,4 @@
-{ buildLinux, fetchurl, fetchFromGitHub, fetchgit, gcc10Stdenv, ubootTools, ... }:
+{ patchdts, buildLinux, fetchurl, fetchFromGitHub, fetchgit, gcc10Stdenv, ubootTools, ... }:
 let
   version = "6.1.57-rkbsp";
   modDirVersion = "6.1.57";
@@ -15,11 +15,16 @@ let
         sha256 = "sha256-kVfs7FmLU9KrqhqPDOaOqdeB0C3oyDgEXP0s0epDAlA=";
       };
     }
+    {
+      name = "patchdts";
+      patch = patchdts;
+    }
   ];
   defconfig = "rockchip_defconfig";
 in
-buildLinux { inherit src modDirVersion version defconfig kernelPatches; 
-stdenv = gcc10Stdenv; 
-autoModules = false;
-# enableCommonConfig = false ;
+buildLinux {
+  inherit src modDirVersion version defconfig kernelPatches;
+  stdenv = gcc10Stdenv;
+  autoModules = false;
+  # enableCommonConfig = false ;
 }

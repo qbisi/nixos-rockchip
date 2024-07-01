@@ -15,7 +15,8 @@ stdenv.mkDerivation {
     mkdir -p b/arch/arm64/boot/dts/rockchip
     cp source/* b/arch/arm64/boot/dts/rockchip/
     for file in source/*.dts; do
-        echo "dtb-y += $(basename "$file").dtb" >> b/arch/arm64/boot/dts/rockchip/Makefile
+        name=$(basename $file)
+        echo "dtb-y += ''${name%.*}.dtb" >> b/arch/arm64/boot/dts/rockchip/Makefile
     done
 
     diff -Naur a b > dts.patch || return 0
