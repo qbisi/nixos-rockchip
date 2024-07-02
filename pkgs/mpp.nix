@@ -1,4 +1,4 @@
-{lib, stdenv, fetchFromGitHub}:
+{lib, stdenv, cmake , fetchFromGitHub}:
 stdenv.mkDerivation {
   pname = "mpp";
   version = "1.0.6";
@@ -7,11 +7,13 @@ stdenv.mkDerivation {
     owner = "rockchip-linux";
     repo = "mpp";
     rev = "1.0.6";
-    hash = "sha256-tVu/3SF/+s+Z6ytKvuY+ZwqsXUlm40yOZ/O5ksNfUYc=";
+    hash = "sha256-rKVj+ZVvjn4KQfJBBT9DgcaraL8IsONuojwvj3Q4f8g=";
   };
 
+  nativeBuildInputs = [ cmake ];
+
   configurePhase = ''
-    cmake -S mpp -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$out/usr
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$out
   '';
 
   buildPhase = ''
