@@ -5,6 +5,7 @@
   linux-aarch64-rockchip-bsp6_1= pkgs.callPackage ./linux-aarch64-rockchip-bsp6_1 { };
   linux-aarch64-rockchip-bsp= pkgs.callPackage ./linux-aarch64-rockchip-bsp { };
   patchdts = pkgs.callPackage ./patchdts.nix { };
+  mpp = pkgs.callPackage ./mpp.nix {};
 } 
 // (pkgs.callPackage ./kernels/linux-aarch64-rkbsp-joshua.nix { }) 
 // (pkgs.callPackage ./uboot.nix { }) 
