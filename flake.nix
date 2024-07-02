@@ -103,5 +103,9 @@
           };
         }
       );
-    };
+    } // (lib.genAttrs'
+      targetNames
+      (k: "image-" + k)
+      (v: self.nixosConfigurations.${v}.config.system.build.diskoImages))
+    // mypkgs;
 }
