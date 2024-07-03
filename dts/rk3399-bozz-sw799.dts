@@ -843,3 +843,35 @@
 		};
 	};
 };
+
+&vpu_mmu {
+	status = "okay";
+};
+
+&vdec_mmu {
+	status = "okay";
+};
+
+// &vpu {
+// 	status = "okay";
+// };
+
+// &vdec {
+// 	status = "okay";
+// };
+
+&mpp_srv {
+	status = "okay";
+};
+
+&vepu {
+	status = "okay";
+};
+
+&vdpu {
+	status = "okay";
+};
+
+&rkvdec {
+	status = "okay";
+};

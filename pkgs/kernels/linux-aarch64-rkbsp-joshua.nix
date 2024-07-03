@@ -1,4 +1,4 @@
-{ lib, patchdts, buildLinux, fetchurl, fetchFromGitHub, fetchgit, gcc10Stdenv, ubootTools, makeLinuxHeaders, ... }:
+{ lib, patchdts, buildLinux, fetchurl, fetchFromGitHub, fetchgit, gcc10Stdenv, ubootTools, makeLinuxHeaders, makeLinuxDtbs, ... }:
 let
   version = "6.1.75-rkbsp-joshua";
   modDirVersion = "6.1.75";
@@ -23,7 +23,7 @@ let
   };
 in
 {
-  linux-aarch64-rkbsp-joshua = buildLinux 
+  linux-aarch64-rkbsp-joshua = buildLinux
     {
       inherit src modDirVersion version defconfig;
       # inherit kernelPatches;
@@ -32,9 +32,14 @@ in
       autoModules = false;
       # enableCommonConfig = false ;
     };
-  linux-aarch64-rkbsp-joshua-headers = makeLinuxHeaders 
+  linux-aarch64-rkbsp-joshua-headers = makeLinuxHeaders
     {
       inherit src version;
+    };
+  linux-aarch64-rkbsp-joshua-dtbs = makeLinuxDtbs
+    {
+      inherit src version;
+      defconfig = "rockchip_linux_defconfig";
     };
 }
 

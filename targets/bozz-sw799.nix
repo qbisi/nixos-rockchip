@@ -9,7 +9,9 @@
 let
   targetname = "bozz-sw799";
   ubootpkgs = mypkgs."uboot-${targetname}";
-  dtbpkgs = mypkgs."dtb-${targetname}";
+  kernel = mypkgs.linux-aarch64-rkbsp-joshua;
+  dtbpkg = mypkgs.linux-aarch64-rkbsp-joshua-dtbs;
+  dtb = "${dtbpkg}/dtbs/rockchip/rk3399-${targetname}.dtb";
 in
 {
   imports = [
@@ -32,11 +34,12 @@ in
 
   # Overrides the default dtb provided by u-boot  
   # For test purpose
-  # boot.loader.grub.extraPerEntryConfig = "devicetree /@${dtbpkgs}";
+  # boot.loader.grub.extraPerEntryConfig = "devicetree /@${dtb}";
+
 
   boot = {
     # kernelPackages = with pkgs;linuxPackagesFor mypkgs.linux-aarch64-7ji-6_9;
-    kernelPackages = with pkgs;linuxPackagesFor mypkgs.linux-aarch64-rkbsp-joshua;
+    kernelPackages = with pkgs;linuxPackagesFor kernel;
     kernelParams = [
       "earlycon" # enable early console, so we can see the boot messages via serial port / HDMI
       # "earlycon=uart8250,mmio32,0xff1a0000"
@@ -85,6 +88,7 @@ in
     htop
     git
     ffmpeg-rockchip
+    mpp
   ];
 
   # symlink this flake source to /etc/nixos
