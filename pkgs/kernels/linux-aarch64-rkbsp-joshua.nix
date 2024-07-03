@@ -17,6 +17,9 @@ let
   defconfig = "rockchip_linux_defconfig";
   structuredExtraConfig = with lib.kernel; {
     BTRFS_FS = yes;
+    VIDEO_HANTRO = yes;
+    STAGING_MEDIA = yes;
+    VIDEO_ROCKCHIP_VDEC = yes;
   };
 in
 {
