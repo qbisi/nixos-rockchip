@@ -35,7 +35,8 @@ in
   # boot.loader.grub.extraPerEntryConfig = "devicetree /@${dtbpkgs}";
 
   boot = {
-    kernelPackages = with pkgs;linuxPackagesFor mypkgs.linux-aarch64-7ji-6_9;
+    # kernelPackages = with pkgs;linuxPackagesFor mypkgs.linux-aarch64-7ji-6_9;
+    kernelPackages = with pkgs;linuxPackagesFor mypkgs.linux-aarch64-rkbsp-joshua;
     kernelParams = [
       "earlycon" # enable early console, so we can see the boot messages via serial port / HDMI
       # "earlycon=uart8250,mmio32,0xff1a0000"
@@ -83,6 +84,7 @@ in
     wget
     htop
     git
+    ffmpeg-rockchip
   ];
 
   # symlink this flake source to /etc/nixos

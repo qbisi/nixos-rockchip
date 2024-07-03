@@ -30,7 +30,7 @@
       };
       ipv6 = {
         addr-gen-mode = "default";
-        method = "auto";
+        method = "ignore";
       };
     };
     wwan0 = {

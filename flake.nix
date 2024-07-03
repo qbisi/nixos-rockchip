@@ -67,7 +67,7 @@
           # use llmnr to resolve hostname
           # make sure llmnr is enabled on your deploy machine
           # by default llmnr is enable with systemd-networkd
-          deployment.targetHost = "bozz-sw799";
+          # deployment.targetHost = "bozz-sw799";
           imports = [
             ./targets/bozz-sw799.nix
             # ./modules/desktop.nix

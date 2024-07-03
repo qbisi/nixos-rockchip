@@ -7,6 +7,7 @@
   patchdts = pkgs.callPackage ./patchdts.nix { };
   mpp = pkgs.callPackage ./mpp.nix {};
   librga-multi = pkgs.callPackage ./librga-multi.nix {};
+  ffmpeg-rockchip = pkgs.callPackage ./ffmpeg-rockchip.nix {};
 } 
 // (pkgs.callPackage ./kernels/linux-aarch64-rkbsp-joshua.nix { }) 
 // (pkgs.callPackage ./uboot.nix { }) 
