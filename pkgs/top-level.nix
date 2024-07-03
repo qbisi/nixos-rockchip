@@ -6,6 +6,7 @@
   linux-aarch64-rockchip-bsp= pkgs.callPackage ./linux-aarch64-rockchip-bsp { };
   patchdts = pkgs.callPackage ./patchdts.nix { };
   mpp = pkgs.callPackage ./mpp.nix {};
+  librga-multi = pkgs.callPackage ./librga-multi.nix {};
 } 
 // (pkgs.callPackage ./kernels/linux-aarch64-rkbsp-joshua.nix { }) 
 // (pkgs.callPackage ./uboot.nix { }) 
