@@ -5,8 +5,8 @@ let
   src = fetchFromGitHub {
     owner = "Joshua-Riek";
     repo = "linux-rockchip";
-    rev = "Ubuntu-rockchip-6.1.0-1018.18";
-    hash = "sha256-rwzvg3N39qlzHi6Yj89p6g6UxVkbspBaVaj6q3m2hXQ=";
+    rev = "Ubuntu-rockchip-6.1.0-1020.20";
+    hash = "sha256-m8ZpkJvU1EKkDfTmOmzFbD/uFL1nxep/So4VqQRYlu0=";
   };
   # kernelPatches = [
   #   {
