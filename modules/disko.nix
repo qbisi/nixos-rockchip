@@ -10,7 +10,7 @@
         content = {
           type = "gpt";
           partitions = {
-            ESP = {
+            ESP-sdhci = {
               name = "ESP";
               start = "16M";
               end = "20M";
@@ -23,7 +23,7 @@
                 mountOptions = [ "fmask=0077" "dmask=0077" ];
               };
             };
-            nix = {
+            nix-sdhci = {
               size = "100%";
               # arm64-root
               type = "8305";
