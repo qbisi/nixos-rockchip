@@ -5,11 +5,11 @@ let
     fileset = fileFilter (file: file.hasExt "dts")  ../dts;
   };
 in
-{ src, version, defconfig ? "defconfig" , ... }: stdenv.mkDerivation {
+{ src, version, defconfig ? "defconfig" , patches ? [] , ... }: stdenv.mkDerivation {
   pname = "linux-dtb";
-  inherit src version;
+  inherit src version patches;
 
-  patchPhase = ''
+  postPatch = ''
     install -m 666 ${files}/* ./arch/arm64/boot/dts/rockchip
     echo "" >> ./arch/arm64/boot/dts/rockchip/Makefile
     for file in ${files}/*.dts; do
