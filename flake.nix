@@ -80,6 +80,13 @@
             # ./modules/desktop.nix
           ];
         };
+        hinlink-h88k = {
+          # deployment.targetHost = "hinlink-h88k";
+          imports = [
+            ./targets/hinlink-h88k.nix
+            ./modules/desktop.nix
+          ];
+        };
       };
       devShells = forAllSystems (
         system:
