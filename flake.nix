@@ -9,8 +9,8 @@
   description = "NixOS flake for building disko-image mainly on non-offical rockchip SBC";
 
   inputs = {
-    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     impermanence.url = "github:nix-community/impermanence";
     disko = {
       url = "github:qbisi/disko";
