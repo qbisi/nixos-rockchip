@@ -336,7 +336,6 @@ $conf .= "
     # Setup the graphics stack for bios and efi systems
     if [ \"\${grub_platform}\" = \"efi\" ]; then
       insmod efi_gop
-      insmod efi_uga
     else
       insmod vbe
     fi
