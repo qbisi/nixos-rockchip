@@ -23,11 +23,7 @@
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = [
-          (import ./overlay/buildUBoot.nix)
-          (import ./overlay/extendLib.nix)
-          (import ./overlay/extendPkgs.nix)
-        ];
+        overlays = import ./overlay;
       };
       inherit (pkgs) lib;
       targetNames = lib.listNixname ./targets;
