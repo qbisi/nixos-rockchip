@@ -2,13 +2,9 @@
 /plugin/;
 
 / {
-	metadata {
-		title ="Enable hdmiphyclk";
-		compatible = "hinlink,h88k";
-		category = "display";
-		description = "Enable hdmiphyclk for Display subsystem.";
-	};
 	
+	compatible = "hinlink,h88k";
+
 	fragment@0 {
 		target = <&display_subsystem>;
 
