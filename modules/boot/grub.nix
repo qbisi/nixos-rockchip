@@ -25,7 +25,7 @@ let
     optionalString
     replaceStrings
     types
-  ;
+    ;
 
   cfg = config.boot.loader.grub;
 
@@ -35,13 +35,14 @@ let
     # Package set of targeted architecture
     if cfg.forcei686 then pkgs.pkgsi686Linux else pkgs;
 
-  realGrub = if cfg.zfsSupport then grubPkgs.grub2.override { zfsSupport = true; zfs = cfg.zfsPackage; }
+  realGrub =
+    if cfg.zfsSupport then grubPkgs.grub2.override { zfsSupport = true; zfs = cfg.zfsPackage; }
     else grubPkgs.grub2;
 
   grub =
     # Don't include GRUB if we're only generating a GRUB menu (e.g.,
     # in EC2 instances).
-    if cfg.devices == ["nodev"]
+    if cfg.devices == [ "nodev" ]
     then null
     else realGrub;
 
@@ -58,57 +59,62 @@ let
       efiSysMountPoint' = replaceStrings [ "/" ] [ "-" ] efiSysMountPoint;
     in
     pkgs.writeText "grub-config.xml" (builtins.toXML
-    { splashImage = f cfg.splashImage;
-      splashMode = f cfg.splashMode;
-      backgroundColor = f cfg.backgroundColor;
-      entryOptions = f cfg.entryOptions;
-      subEntryOptions = f cfg.subEntryOptions;
-      # PC platforms (like x86_64-linux) have a non-EFI target (`grubTarget`), but other platforms
-      # (like aarch64-linux) have an undefined `grubTarget`. Avoid providing the path to a non-EFI
-      # GRUB on those platforms.
-      grub = f (if (grub.grubTarget or "") != "" then grub else "");
-      grubTarget = f (grub.grubTarget or "");
-      shell = "${pkgs.runtimeShell}";
-      fullName = lib.getName realGrub;
-      fullVersion = lib.getVersion realGrub;
-      grubEfi = f grubEfi;
-      grubTargetEfi = optionalString cfg.efiSupport (f (grubEfi.grubTarget or ""));
-      bootPath = args.path;
-      storePath = config.boot.loader.grub.storePath;
-      bootloaderId = if args.efiBootloaderId == null then "${config.system.nixos.distroName}${efiSysMountPoint'}" else args.efiBootloaderId;
-      timeout = if config.boot.loader.timeout == null then -1 else config.boot.loader.timeout;
-      theme = f cfg.theme;
-      inherit efiSysMountPoint;
-      inherit (args) devices;
-      inherit (efi) canTouchEfiVariables;
-      inherit (cfg)
-        extraConfig extraPerEntryConfig extraEntries forceInstall useOSProber
-        extraGrubInstallArgs
-        extraEntriesBeforeNixOS extraPrepareConfig configurationLimit copyKernels
-        default fsIdentifier efiSupport efiInstallAsRemovable gfxmodeEfi gfxmodeBios gfxpayloadEfi gfxpayloadBios
-        users
-        timeoutStyle
-      ;
-      path = with pkgs; makeBinPath (
-        [ coreutils gnused gnugrep findutils diffutils btrfs-progs util-linux mdadm ]
-        ++ optional cfg.efiSupport efibootmgr
-        ++ optionals cfg.useOSProber [ busybox os-prober ]);
-      font = lib.optionalString (cfg.font != null) (
-             if lib.last (lib.splitString "." cfg.font) == "pf2"
-             then cfg.font
-             else "${convertedFont}");
-    });
+      {
+        splashImage = f cfg.splashImage;
+        splashMode = f cfg.splashMode;
+        backgroundColor = f cfg.backgroundColor;
+        entryOptions = f cfg.entryOptions;
+        subEntryOptions = f cfg.subEntryOptions;
+        # PC platforms (like x86_64-linux) have a non-EFI target (`grubTarget`), but other platforms
+        # (like aarch64-linux) have an undefined `grubTarget`. Avoid providing the path to a non-EFI
+        # GRUB on those platforms.
+        grub = f (if (grub.grubTarget or "") != "" then grub else "");
+        grubTarget = f (grub.grubTarget or "");
+        shell = "${pkgs.runtimeShell}";
+        fullName = lib.getName realGrub;
+        fullVersion = lib.getVersion realGrub;
+        grubEfi = f grubEfi;
+        grubTargetEfi = optionalString cfg.efiSupport (f (grubEfi.grubTarget or ""));
+        bootPath = args.path;
+        storePath = config.boot.loader.grub.storePath;
+        bootloaderId = if args.efiBootloaderId == null then "${config.system.nixos.distroName}${efiSysMountPoint'}" else args.efiBootloaderId;
+        timeout = if config.boot.loader.timeout == null then -1 else config.boot.loader.timeout;
+        theme = f cfg.theme;
+        inherit efiSysMountPoint;
+        inherit (args) devices;
+        inherit (efi) canTouchEfiVariables;
+        inherit (cfg)
+          extraConfig extraPerEntryConfig extraEntries forceInstall useOSProber
+          extraGrubInstallArgs
+          extraEntriesBeforeNixOS extraPrepareConfig configurationLimit copyKernels
+          default fsIdentifier efiSupport efiInstallAsRemovable gfxmodeEfi gfxmodeBios gfxpayloadEfi gfxpayloadBios
+          users
+          timeoutStyle
+          ;
+        path = with pkgs; makeBinPath (
+          [ coreutils gnused gnugrep findutils diffutils btrfs-progs util-linux mdadm ]
+          ++ optional cfg.efiSupport efibootmgr
+          ++ optionals cfg.useOSProber [ busybox os-prober ]
+        );
+        font = lib.optionalString (cfg.font != null) (
+          if lib.last (lib.splitString "." cfg.font) == "pf2"
+          then cfg.font
+          else "${convertedFont}"
+        );
+      });
 
-  bootDeviceCounters = foldr (device: attr: attr // { ${device} = (attr.${device} or 0) + 1; }) {}
+  bootDeviceCounters = foldr (device: attr: attr // { ${device} = (attr.${device} or 0) + 1; }) { }
     (concatMap (args: args.devices) cfg.mirroredBoots);
 
-  convertedFont = (pkgs.runCommand "grub-font-converted.pf2" {}
-           (builtins.concatStringsSep " "
-             ([ "${realGrub}/bin/grub-mkfont"
-               cfg.font
-               "--output" "$out"
-             ] ++ (optional (cfg.fontSize!=null) "--size ${toString cfg.fontSize}")))
-         );
+  convertedFont = (pkgs.runCommand "grub-font-converted.pf2" { }
+    (builtins.concatStringsSep " "
+      ([
+        "${realGrub}/bin/grub-mkfont"
+        cfg.font
+        "--output"
+        "$out"
+      ] ++ (optional (cfg.fontSize != null) "--size ${toString cfg.fontSize}")))
+  );
 
   defaultSplash = pkgs.nixos-artwork.wallpapers.simple-dark-gray-bootloader.gnomeFilePath;
 in
@@ -149,7 +155,7 @@ in
       };
 
       devices = mkOption {
-        default = [];
+        default = [ ];
         example = [ "/dev/disk/by-id/wwn-0x500001234567890a" ];
         type = types.listOf types.str;
         description = ''
@@ -160,7 +166,7 @@ in
       };
 
       users = mkOption {
-        default = {};
+        default = { };
         example = {
           root = { hashedPasswordFile = "/path/to/file"; };
         };
@@ -406,7 +412,7 @@ in
 
       extraFiles = mkOption {
         type = types.attrsOf types.path;
-        default = {};
+        default = { };
         example = literalExpression ''
           { "memtest.bin" = "''${pkgs.memtest86plus}/memtest.bin"; }
         '';
@@ -694,16 +700,22 @@ in
         '';
       };
 
+      devicetree = mkOption {
+        default = "/";
+        type = types.path;
+      };
     };
 
   };
 
-
+  disabledModules = [ "system/boot/loader/grub/grub.nix" ];
   ###### implementation
 
   config = mkMerge [
 
-    { boot.loader.grub.splashImage = mkDefault defaultSplash; }
+    {
+      boot.loader.grub.splashImage = mkDefault defaultSplash;
+    }
 
     (mkIf (cfg.splashImage == defaultSplash) {
       boot.loader.grub.backgroundColor = mkDefault "#2F302F";
@@ -721,9 +733,16 @@ in
       boot.loader.supportsInitrdSecrets = true;
 
       system.systemBuilderArgs.configurationName = cfg.configurationName;
-      system.systemBuilderCommands = ''
-        echo -n "$configurationName" > $out/configuration-name
-      '';
+      system.systemBuilderCommands =
+        let
+          extraCommands =
+            if (lib.pathIsRegularFile config.boot.loader.grub.devicetree) then ''
+              ln -s ${config.boot.loader.grub.devicetree} $out/devicetree
+            '' else "";
+        in
+        ''
+          echo -n "$configurationName" > $out/configuration-name
+        '' + extraCommands;
 
       system.build.installBootLoader =
         let
@@ -734,17 +753,22 @@ in
             inherit (config.system.nixos) distroName;
           };
           perl = pkgs.perl.withPackages (p: with p; [
-            FileSlurp FileCopyRecursive
-            XMLLibXML XMLSAX XMLSAXBase
-            ListCompare JSON
+            FileSlurp
+            FileCopyRecursive
+            XMLLibXML
+            XMLSAX
+            XMLSAXBase
+            ListCompare
+            JSON
           ]);
-        in pkgs.writeScript "install-grub.sh" (''
-        #!${pkgs.runtimeShell}
-        set -e
-        ${optionalString cfg.enableCryptodisk "export GRUB_ENABLE_CRYPTODISK=y"}
-      '' + flip concatMapStrings cfg.mirroredBoots (args: ''
-        ${perl}/bin/perl ${install-grub-pl} ${grubConfig args} $@
-      '') + cfg.extraInstallCommands);
+        in
+        pkgs.writeScript "install-grub.sh" (''
+          #!${pkgs.runtimeShell}
+          set -e
+          ${optionalString cfg.enableCryptodisk "export GRUB_ENABLE_CRYPTODISK=y"}
+        '' + flip concatMapStrings cfg.mirroredBoots (args: ''
+          ${perl}/bin/perl ${install-grub-pl} ${grubConfig args} $@
+        '') + cfg.extraInstallCommands);
 
       system.build.grub = grub;
 
@@ -755,9 +779,11 @@ in
       environment.systemPackages = optional (grub != null) grub;
 
       boot.loader.grub.extraPrepareConfig =
-        concatStrings (mapAttrsToList (n: v: ''
-          ${pkgs.coreutils}/bin/install -Dp "${v}" "${efi.efiSysMountPoint}/"${escapeShellArg n}
-        '') config.boot.loader.grub.extraFiles);
+        concatStrings (mapAttrsToList
+          (n: v: ''
+            ${pkgs.coreutils}/bin/install -Dp "${v}" "${efi.efiSysMountPoint}/"${escapeShellArg n}
+          '')
+          config.boot.loader.grub.extraFiles);
 
       assertions = [
         {
@@ -801,15 +827,18 @@ in
     })
 
     (mkIf options.boot.loader.grub.version.isDefined {
-      warnings = [ ''
-        The boot.loader.grub.version option does not have any effect anymore, please remove it from your configuration.
-      '' ];
+      warnings = [
+        ''
+          The boot.loader.grub.version option does not have any effect anymore, please remove it from your configuration.
+        ''
+      ];
     })
   ];
 
 
   imports =
-    [ (mkRemovedOptionModule [ "boot" "loader" "grub" "bootDevice" ] "")
+    [
+      (mkRemovedOptionModule [ "boot" "loader" "grub" "bootDevice" ] "")
       (mkRenamedOptionModule [ "boot" "copyKernels" ] [ "boot" "loader" "grub" "copyKernels" ])
       (mkRenamedOptionModule [ "boot" "extraGrubEntries" ] [ "boot" "loader" "grub" "extraEntries" ])
       (mkRenamedOptionModule [ "boot" "extraGrubEntriesBeforeNixos" ] [ "boot" "loader" "grub" "extraEntriesBeforeNixOS" ])

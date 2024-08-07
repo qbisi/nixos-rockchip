@@ -463,6 +463,7 @@ sub addEntry {
 
     my $kernel = copyToKernelsDir(Cwd::abs_path("$path/kernel"));
     my $initrd = copyToKernelsDir(Cwd::abs_path("$path/initrd"));
+    my $devicetree = -e "$path/devicetree" ? copyToKernelsDir(Cwd::abs_path("$path/devicetree")) : undef;
 
     # Include second initrd with secrets
     if (-e -x "$path/append-initrd-secrets") {
@@ -514,6 +515,7 @@ sub addEntry {
     }
     $conf .= "  $extraPerEntryConfig\n" if $extraPerEntryConfig;
     $conf .= "  multiboot $xen $xenParams\n" if $xen;
+    $conf .= "  devicetree $devicetree\n" if $devicetree;
     $conf .= "  " . ($xen ? "module" : "linux") . " $kernel $kernelParams\n";
     $conf .= "  " . ($xen ? "module" : "initrd") . " $initrd\n";
     $conf .= "}\n\n";
