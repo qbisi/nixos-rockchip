@@ -701,7 +701,7 @@ in
       };
 
       devicetree = mkOption {
-        default = "/";
+        default = with config.hardware.deviceTree; "${package}/${name}";
         type = types.path;
       };
     };
