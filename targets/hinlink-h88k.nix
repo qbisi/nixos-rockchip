@@ -22,6 +22,7 @@ in
     ../modules/nix.nix
     ../modules/network/networkManager.nix
     ../modules/disko.nix
+    ../modules/boot/grub.nix
   ];
 
   networking.hostName = targetname;
@@ -33,7 +34,8 @@ in
 
   # Overrides the default dtb provided by u-boot  
   # For test purpose
-  boot.loader.grub.extraPerEntryConfig = "devicetree /@${dtb}";
+  # boot.loader.grub.extraPerEntryConfig = "devicetree /@${dtb}";
+  boot.loader.grub.devicetree = dtb;
 
 
   boot = {
