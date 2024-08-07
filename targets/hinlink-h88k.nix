@@ -116,5 +116,5 @@ in
     KERNEL=="rga", MODE="0660", GROUP="video"
   '';
 
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 }
