@@ -1,6 +1,10 @@
 { pkgs, ... }:
 {
-  hardware.pulseaudio.enable = true;
+  hardware = {
+    pulseaudio.enable = true;
+    graphics.enable = true;
+    bluetooth.enable = true;
+  };
 
   services.desktopManager.plasma6.enable = true;
   services.displayManager.sddm = {
@@ -24,6 +28,8 @@
     vscode-fhs
     chromium
     nixpkgs-fmt
+    ffmpeg-rockchip
+    mpp
   ];
 
 

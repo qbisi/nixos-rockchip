@@ -27,16 +27,16 @@ in
 
   networking.hostName = targetname;
 
-  disko.extraPostVM = ''
-    ${pkgs.zstd}/bin/zstd --compress $out/main.raw -o $out/nixos-${targetname}.img.zst
-    rm $out/main.raw
-  '';
+  disko = {
+    extraPostVM = ''
+      ${pkgs.zstd}/bin/zstd --compress $out/main.raw -o $out/nixos-${targetname}.img.zst
+      rm $out/main.raw
+    '';
+    # devicetype = "sdmmc";
+  };
 
   # Overrides the default dtb provided by u-boot  
-  # For test purpose
-  # boot.loader.grub.extraPerEntryConfig = "devicetree /@${dtb}";
   boot.loader.grub.devicetree = dtb;
-
 
   boot = {
     # kernelPackages = with pkgs;linuxPackagesFor mypkgs.linux-aarch64-7ji-6_9;
@@ -59,8 +59,6 @@ in
   };
 
   hardware = {
-    opengl.enable = true;
-    bluetooth.enable = true;
     firmware = [ mypkgs.mali-panthor-g610-firmware ];
   };
 
@@ -88,8 +86,6 @@ in
     wget
     htop
     git
-    ffmpeg-rockchip
-    mpp
   ];
 
   # symlink this flake source to /etc/nixos
@@ -119,8 +115,6 @@ in
     KERNEL=="mpp_service", MODE="0660", GROUP="video"
     KERNEL=="rga", MODE="0660", GROUP="video"
   '';
-
-  # programs.hyprland.enable = true;
 
   system.stateVersion = "24.05";
 }
