@@ -8,14 +8,10 @@
 }:
 let
   targetname = "hinlink-h88k";
-  # ubootpkgs = mypkgs."uboot-bozz-sw799";
   kernel = mypkgs.linux-aarch64-rkbsp-joshua;
-  dtbpkg = mypkgs.linux-aarch64-rkbsp-joshua-dtbs;
-  dtb = "${dtbpkg}/dtbs/rockchip/rk3588-${targetname}.dtb";
 in
 {
   imports = [
-    # inputs.impermanence.nixosModules.impermanence
     inputs.disko.nixosModules.disko
     ../modules/btrfs-growpart.nix
     ../modules/grub.nix
@@ -35,11 +31,7 @@ in
     # devicetype = "sdmmc";
   };
 
-  # Overrides the default dtb provided by u-boot  
-  boot.loader.grub.devicetree = dtb;
-
   boot = {
-    # kernelPackages = with pkgs;linuxPackagesFor mypkgs.linux-aarch64-7ji-6_9;
     kernelPackages = with pkgs;linuxPackagesFor kernel;
     kernelParams = [
       "earlycon" # enable early console, so we can see the boot messages via serial port / HDMI
@@ -60,6 +52,12 @@ in
 
   hardware = {
     firmware = [ mypkgs.mali-panthor-g610-firmware ];
+    deviceTree = {
+      name = "rockchip/rk3588-hinlink-h88k.dtb";
+      overlays = [
+        { name = "h88k-enable-hdmiphy"; dtsFile = ../dts/overlay/h88k-enable-hdmiphy.dts; }
+      ];
+    };
   };
 
   # Set your time zone. 
