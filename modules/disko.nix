@@ -20,7 +20,7 @@ with lib;
     {
       disko = {
         enableConfig = true;
-        memSize = 4096;
+        memSize = 8192;
         devices = {
           disk.main = {
             imageSize = "2G";
