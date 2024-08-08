@@ -117,6 +117,14 @@ let
   );
 
   defaultSplash = pkgs.nixos-artwork.wallpapers.simple-dark-gray-bootloader.gnomeFilePath;
+
+  devicetree = with config.hardware.deviceTree;
+    if isNull name then "/" else "${package}/${name}";
+
+  extraBuilderCommands =
+    if (lib.pathIsRegularFile devicetree) then ''
+      ln -s ${config.boot.loader.grub.devicetree} $out/devicetree
+    '' else "";
 in
 
 {
@@ -700,10 +708,6 @@ in
         '';
       };
 
-      devicetree = mkOption {
-        default = with config.hardware.deviceTree; "${package}/${name}";
-        type = types.path;
-      };
     };
 
   };
@@ -734,15 +738,9 @@ in
 
       system.systemBuilderArgs.configurationName = cfg.configurationName;
       system.systemBuilderCommands =
-        let
-          extraCommands =
-            if (lib.pathIsRegularFile config.boot.loader.grub.devicetree) then ''
-              ln -s ${config.boot.loader.grub.devicetree} $out/devicetree
-            '' else "";
-        in
         ''
           echo -n "$configurationName" > $out/configuration-name
-        '' + extraCommands;
+        '' + extraBuilderCommands;
 
       system.build.installBootLoader =
         let
