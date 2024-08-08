@@ -1,0 +1,54 @@
+diff --git a/grub-core/commands/smbios.c b/grub-core/commands/smbios.c
+index 1a9086d..9557a9c 100644
+--- a/grub-core/commands/smbios.c
++++ b/grub-core/commands/smbios.c
+@@ -79,6 +79,23 @@ linux_string (const char *value)
+   return out;
+ }
+ 
++static char *
++to_lowercase (const char *value)
++{
++  char *out = grub_malloc( grub_strlen (value) + 1);
++  const char *src = value;
++  char *dst = out;
++
++  for (; *src; src++)
++    if (*src >= 'A' && *src <= 'Z')
++      *dst++ = *src + ('a' - 'A');
++    else
++      *dst++ = *src;
++
++  *dst = 0;
++  return out;
++}
++
+ /*
+  * These functions convert values from the various SMBIOS structure field types
+  * into a string formatted to be returned to the user.  They expect that the
+@@ -192,6 +209,7 @@ static const struct {
+ #define FIRST_GETTER_OPT (3)
+ #define SETTER_OPT (FIRST_GETTER_OPT + ARRAY_SIZE(field_extractors))
+ #define LINUX_OPT (FIRST_GETTER_OPT + ARRAY_SIZE(field_extractors) + 1)
++#define LOWERCASE_OPT (FIRST_GETTER_OPT + ARRAY_SIZE(field_extractors) + 2)
+ 
+ static const struct grub_arg_option options[] = {
+   {"type",       't', 0, N_("Match structures with the given type."),
+@@ -216,6 +234,8 @@ static const struct grub_arg_option options[] = {
+                          N_("variable"), ARG_TYPE_STRING},
+   {"linux",     '\0', 0, N_("Filter the result like linux does."),
+                          N_("variable"), ARG_TYPE_NONE},
++  {"lowercase",  '\0', 0,N_("Convert the result to lowercase."),
++                         N_("variable"), ARG_TYPE_NONE},
+   {0, 0, 0, 0, 0, 0}
+ };
+ 
+@@ -355,6 +375,8 @@ grub_cmd_smbios (grub_extcmd_context_t ctxt,
+ 
+   if (state[LINUX_OPT].set)
+     value = modified_value = linux_string (value);
++  else if (state[LOWERCASE_OPT].set)
++    value = modified_value = to_lowercase (value);
+ 
+   /* Store or print the formatted value. */
+   if (state[SETTER_OPT].set)
