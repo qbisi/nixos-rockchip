@@ -18,7 +18,7 @@ in
     ../modules/nix.nix
     ../modules/network/networkManager.nix
     ../modules/disko.nix
-    ../modules/boot/grub.nix
+    ../modules/overlay/boot/grub.nix
   ];
 
   networking.hostName = targetname;
