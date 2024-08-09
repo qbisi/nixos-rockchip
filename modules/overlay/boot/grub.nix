@@ -123,7 +123,7 @@ let
 
   extraBuilderCommands =
     if (lib.pathIsRegularFile devicetree) then ''
-      ln -s ${config.boot.loader.grub.devicetree} $out/devicetree
+      ln -s ${devicetree} $out/devicetree
     '' else "";
 in
 
