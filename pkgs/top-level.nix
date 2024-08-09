@@ -12,5 +12,5 @@
   mali-panthor-g610-firmware = pkgs.callPackage ./mali-panthor-g610-firmware.nix {};
 } 
 // (pkgs.callPackage ./kernels/linux-aarch64-rkbsp-joshua.nix { }) 
-// (pkgs.callPackage ./uboot.nix { }) 
+// (pkgs.callPackage ./u-boot { }) 
 // (pkgs.callPackage ./compileDTS.nix { })
