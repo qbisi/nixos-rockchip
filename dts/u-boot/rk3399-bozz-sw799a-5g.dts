@@ -860,18 +860,18 @@
 // 	status = "okay";
 // };
 
-&mpp_srv {
-	status = "okay";
-};
+// &mpp_srv {
+// 	status = "okay";
+// };
 
-&vepu {
-	status = "okay";
-};
+// &vepu {
+// 	status = "okay";
+// };
 
-&vdpu {
-	status = "okay";
-};
+// &vdpu {
+// 	status = "okay";
+// };
 
-&rkvdec {
-	status = "okay";
-};
+// &rkvdec {
+// 	status = "okay";
+// };
