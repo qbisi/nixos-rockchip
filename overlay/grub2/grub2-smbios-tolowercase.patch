@@ -1,8 +1,8 @@
 diff --git a/grub-core/commands/smbios.c b/grub-core/commands/smbios.c
-index 1a9086d..9557a9c 100644
+index 1a9086d..424fe77 100644
 --- a/grub-core/commands/smbios.c
 +++ b/grub-core/commands/smbios.c
-@@ -79,6 +79,23 @@ linux_string (const char *value)
+@@ -79,6 +79,25 @@ linux_string (const char *value)
    return out;
  }
  
@@ -16,7 +16,9 @@ index 1a9086d..9557a9c 100644
 +  for (; *src; src++)
 +    if (*src >= 'A' && *src <= 'Z')
 +      *dst++ = *src + ('a' - 'A');
-+    else
++    else if (*src == ' ')
++      *dst++ = '-';
++    else 
 +      *dst++ = *src;
 +
 +  *dst = 0;
@@ -26,7 +28,7 @@ index 1a9086d..9557a9c 100644
  /*
   * These functions convert values from the various SMBIOS structure field types
   * into a string formatted to be returned to the user.  They expect that the
-@@ -192,6 +209,7 @@ static const struct {
+@@ -192,6 +211,7 @@ static const struct {
  #define FIRST_GETTER_OPT (3)
  #define SETTER_OPT (FIRST_GETTER_OPT + ARRAY_SIZE(field_extractors))
  #define LINUX_OPT (FIRST_GETTER_OPT + ARRAY_SIZE(field_extractors) + 1)
@@ -34,7 +36,7 @@ index 1a9086d..9557a9c 100644
  
  static const struct grub_arg_option options[] = {
    {"type",       't', 0, N_("Match structures with the given type."),
-@@ -216,6 +234,8 @@ static const struct grub_arg_option options[] = {
+@@ -216,6 +236,8 @@ static const struct grub_arg_option options[] = {
                           N_("variable"), ARG_TYPE_STRING},
    {"linux",     '\0', 0, N_("Filter the result like linux does."),
                           N_("variable"), ARG_TYPE_NONE},
@@ -43,7 +45,13 @@ index 1a9086d..9557a9c 100644
    {0, 0, 0, 0, 0, 0}
  };
  
-@@ -355,6 +375,8 @@ grub_cmd_smbios (grub_extcmd_context_t ctxt,
+@@ -350,11 +372,12 @@ grub_cmd_smbios (grub_extcmd_context_t ctxt,
+   /* Format the requested structure field into a readable string. */
+   value = field_extractors[field_type].format (structure, offset);
+   if (value == NULL)
+-    return grub_error (GRUB_ERR_IO,
+-                       N_("failed to retrieve the structure field"));
++    return GRUB_ERR_NONE;
  
    if (state[LINUX_OPT].set)
      value = modified_value = linux_string (value);

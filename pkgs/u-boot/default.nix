@@ -113,35 +113,14 @@ in
     ROCKCHIP_TPL = "${rkbin}/bin/rk33/rk3399_ddr_800MHz_v1.30.bin";
   };
 
-  uboottest = buildUBoot {
-
-    version = "2024.04";
-
-    src = fetchFromGitHub {
-      owner = "u-boot";
-      repo = "u-boot";
-      rev = "v2024.04";
-      sha256 = "sha256-IlaDdjKq/Pq2orzcU959h93WXRZfvKBGDO/MFw9mZMg=";
-    };
-
-    defconfig = "bozz-sw799-rk3399_defconfig";
-
-    # extraConfig = ''
-    #   CONFIG_DEFAULT_DEVICE_TREE="rk3399-aio-3399j"
-    #   CONFIG_DEFAULT_FDT_FILE="rk3399-aio-3399j.dtb"
-    #   CONFIG_LOG=y
-    #   CONFIG_SPL_LOG=y
-    # '';
-
-    ROCKCHIP_TPL = "${rkbin}/bin/rk33/rk3399_ddr_800MHz_v1.30.bin";
+  uboot-fine3399 = ubootRK3399 {
+    defconfig = "evb-rk3399_defconfig";
+    deviceTree = "rockchip/rk3399-fine3399";
+    manufacturer = "Bozz";
+    product = "Fine3399";
+    family = "Rockchip/RK3399";
     BL31 = "${armTrustedFirmwareRK3399}/bl31.elf";
-
-    extraMakeFlags = [ "KCFLAGS=-march=armv8-a+crypto" ];
-
-    extraMeta = {
-      platforms = [ "aarch64-linux" ];
-    };
-    filesToInstall = [ "u-boot.itb" "idbloader.img" "u-boot-rockchip.bin" ];
+    ROCKCHIP_TPL = "${rkbin}/bin/rk33/rk3399_ddr_800MHz_v1.30.bin";
   };
 }
 

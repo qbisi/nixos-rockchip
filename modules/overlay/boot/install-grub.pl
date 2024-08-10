@@ -340,10 +340,18 @@ $conf .= "
       insmod vbe
     fi
 
-    smbios --type 1 --get-string 4 --set manufacturer --lowercase
+
     smbios --type 1 --get-string 5 --set product --lowercase
+    smbios --type 1 --get-string 6 --set version --lowercase
     smbios --type 1 --get-string 26 --set family --lowercase
-    set fdtfile=\"\${family}-\${manufacturer}-\${product}.dtb\"
+    if [ \"\${family}\" ] ; then
+        if [ \"\${product}\" ]; then
+          set fdtfile=\"\${family}-\${product}\"
+          if [ \"\${version}\" ]; then
+          set fdtfile=\"\${fdtfile}-\${version}\"
+          fi
+        fi
+    fi
 ";
 
 if ($font) {
@@ -469,7 +477,7 @@ sub addEntry {
     my $kernel = copyToKernelsDir(Cwd::abs_path("$path/kernel"));
     my $initrd = copyToKernelsDir(Cwd::abs_path("$path/initrd"));
     my $devicetree = -e "$path/devicetree" ? copyToKernelsDir(Cwd::abs_path("$path/devicetree")) : undef;
-    $devicetree = copyToKernelsDir(Cwd::abs_path("$path/dtbs")) . "/\${fdtfile}" if !$devicetree && !$copyKernels;
+    $devicetree = copyToKernelsDir(Cwd::abs_path("$path/dtbs")) . "/\${fdtfile}.dtb" if !$devicetree && !$copyKernels;
 
     # Include second initrd with secrets
     if (-e -x "$path/append-initrd-secrets") {

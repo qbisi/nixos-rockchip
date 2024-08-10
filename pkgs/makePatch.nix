@@ -9,7 +9,9 @@
   buildPhase = ''
     mkdir -p a/${prefix} b/${prefix}
     cp -r source/* b/${prefix}
-
+    if [ -e source/Makefile ]; then
+      touch a/${prefix}/Makefile
+    fi
     diff -Naur a b > add-files.patch || return 0
   '';
 

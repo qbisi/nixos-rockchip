@@ -1,4 +1,4 @@
-{ lib, buildLinux, fetchurl, fetchFromGitHub, fetchgit, gcc10Stdenv, ubootTools, makeLinuxHeaders, makeLinuxDtbs, ... }:
+{ lib, buildLinux, fetchurl, fetchFromGitHub, gcc10Stdenv, makeLinuxHeaders, dtsPatch, ... }:
 let
   version = "6.1.75-rkbsp-joshua";
   modDirVersion = "6.1.75";
@@ -19,8 +19,12 @@ let
       };
     }
     {
-      name = "link_defconfig";
+      name = "link-defconfig";
       patch =./link-defconfig.patch;
+    }
+    {
+      name = "add-devicetrees";
+      patch = dtsPatch;
     }
   ];
   patches = map (p: p.patch) kernelPatches ;
@@ -40,15 +44,11 @@ in
       inherit structuredExtraConfig;
       stdenv = gcc10Stdenv;
       autoModules = false;
-      # enableCommonConfig = false ;
+      extraMakeFlags = ["KCFLAGS=-march=armv8-a+crypto"];
     };
   linux-aarch64-rkbsp-joshua-headers = makeLinuxHeaders
     {
       inherit src version patches;
-    };
-  linux-aarch64-rkbsp-joshua-dtbs = makeLinuxDtbs
-    {
-      inherit src version patches defconfig;
     };
 }
 
