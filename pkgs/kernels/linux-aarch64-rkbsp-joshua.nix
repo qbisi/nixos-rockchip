@@ -1,4 +1,4 @@
-{ lib, patchdts, buildLinux, fetchurl, fetchFromGitHub, fetchgit, gcc10Stdenv, ubootTools, makeLinuxHeaders, makeLinuxDtbs, ... }:
+{ lib, buildLinux, fetchurl, fetchFromGitHub, fetchgit, gcc10Stdenv, ubootTools, makeLinuxHeaders, makeLinuxDtbs, ... }:
 let
   version = "6.1.75-rkbsp-joshua";
   modDirVersion = "6.1.75";

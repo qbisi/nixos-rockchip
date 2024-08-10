@@ -7,8 +7,19 @@
 , armTrustedFirmwareRK3399
 , armTrustedFirmwareRK3588
 , buildUBoot
+, makePatch
 }:
 let
+  upstreamSrc = with lib.fileset; toSource {
+    root = ../../dts/kernel;
+    fileset = ../../dts/kernel;
+  };
+  ubootSrc = with lib.fileset; toSource {
+    root = ../../dts/u-boot;
+    fileset = ../../dts/u-boot;
+  };
+  dts-u-boot-patch1 = makePatch {src=upstreamSrc; prefix= "dts/upstream/src/arm64/rockchip";};
+  dts-u-boot-patch2 = makePatch {src=ubootSrc; prefix= "arch/arm/dts";};
   ubootRK3399 =
     { defconfig
     , deviceTree ? null
@@ -33,8 +44,12 @@ let
       assert (!isNull family) -> smbiosSupport;
       (buildUBoot ({
         inherit defconfig;
-        extraPatches = [ ./add-smbios-config.patch ./rk3399-devicetree-display-subsystem-add-label.patch ]
-          ++ extraPatches;
+        extraPatches = [
+          ./add-smbios-config.patch
+          ./rk3399-devicetree-display-subsystem-add-label.patch
+          dts-u-boot-patch1
+          dts-u-boot-patch2
+        ] ++ extraPatches;
         extraConfig = lib.optionalString (!isNull deviceTree) ''
           CONFIG_DEFAULT_DEVICE_TREE="${deviceTree}"
           CONFIG_DEFAULT_FDT_FILE="${deviceTree}.dtb"
@@ -90,7 +105,7 @@ in
   uboot-bozz-sw799 = ubootRK3399 {
     defconfig = "evb-rk3399_defconfig";
     deviceTree = "rockchip/rk3399-bozz-sw799a-5g";
-    manufacturer = "Bozz Tech";
+    manufacturer = "Bozz";
     product = "Bozz SW799A";
     version = "5G";
     family = "Rockchip/RK3399";
