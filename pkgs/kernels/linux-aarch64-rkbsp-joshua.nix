@@ -20,7 +20,7 @@ let
     }
     {
       name = "link_defconfig";
-      patch =./link_defconfig.patch;
+      patch =./link-defconfig.patch;
     }
   ];
   patches = map (p: p.patch) kernelPatches ;
