@@ -1,10 +1,10 @@
 final: prev:
 {
-  buildUBoot = { defconfig, extraConfig ? "", ... }@args: (prev.buildUBoot args).overrideAttrs {
+  buildUBoot = { defconfig, extraConfig ? "", ... }@args: (prev.buildUBoot args).overrideAttrs (new: old: {
     passAsFile = [ "extraConfig" ];
-    prePatch = ''
+    postPatch = ''
       { echo "";cat $extraConfigPath; } >> ./configs/${defconfig}
-    '';
+    '' + old.postPatch;
     configurePhase = ''
       runHook preConfigure
 
@@ -12,5 +12,5 @@ final: prev:
 
       runHook postConfigure
     '';
-  };
+  });
 }
