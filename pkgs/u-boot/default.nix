@@ -249,7 +249,7 @@ let
 in
 {
   inherit ubootRockchip;
-  ubootBozzSw799 = ubootRockchip {
+  ubootBozzSW799 = ubootRockchip {
     defconfig = "evb-rk3399_defconfig";
     deviceTree = "rockchip/rk3399-bozz-sw799a-5g";
     manufacturer = "Bozz";

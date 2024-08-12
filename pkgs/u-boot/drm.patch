@@ -7070,6 +7070,40 @@ index 0000000000..d289259a83
 +CONFIG_DRM_ROCKCHIP_DW_HDMI_QP=y
 +# CONFIG_DRM_ROCKCHIP_DW_DP=y
 \ No newline at end of file
+diff --git a/configs/rock5b-rk3588_defconfig b/configs/rock5b-rk3588_defconfig
+index fc118cea7b..309e7c1e87 100644
+--- a/configs/rock5b-rk3588_defconfig
++++ b/configs/rock5b-rk3588_defconfig
+@@ -102,3 +102,28 @@ CONFIG_USB_GADGET=y
+ CONFIG_USB_GADGET_DOWNLOAD=y
+ CONFIG_USB_FUNCTION_ROCKUSB=y
+ CONFIG_ERRNO_STR=y
++
++# CONFIG_SYSINFO=y
++# CONFIG_SYSINFO_SMBIOS=y
++# CONFIG_LOG=y
++# # CONFIG_LOG_DEFAULT_LEVEL=7
++# # CONFIG_LOG_MAX_LEVEL=7
++# CONFIG_USB_KEYBOARD=y
++# CONFIG_SYS_USB_EVENT_POLL_VIA_CONTROL_EP=y
++# CONFIG_CMD_BOOTMENU=y
++# # CONFIG_AUTOBOOT_KEYED=y
++# # CONFIG_BOOTDELAY=2
++# # CONFIG_AUTOBOOT_MENU_SHOW=y
++# # CONFIG_BOOTMENU_DISABLE_UBOOT_CONSOLE=y
++# CONFIG_CMD_EFIDEBUG=y
++# CONFIG_CMD_EFICONFIG=y
++# CONFIG_USE_PREBOOT=y
++# CONFIG_PREBOOT="pci enum;usb start;nvme scan; setenv bootmenu_0 UEFI Boot Manager=bootefi bootmgr; setenv bootmenu_1 UEFI Maintenance Menu=eficonfig"
++
++# CONFIG_DISPLAY=y
++# CONFIG_VIDEO=y
++# # CONFIG_VIDEO_COPY=y
++# CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER=y
++# CONFIG_DRM_ROCKCHIP=y
++# CONFIG_PHY_ROCKCHIP_SAMSUNG_HDPTX_HDMI=y
++# CONFIG_DRM_ROCKCHIP_DW_HDMI_QP=y
+\ No newline at end of file
 diff --git a/drivers/core/of_access.c b/drivers/core/of_access.c
 index c8db743f52..c29e805e3a 100644
 --- a/drivers/core/of_access.c
@@ -60227,7 +60261,7 @@ index 0000000000..80b505c734
 +// 	status = "okay";
 +// };
 diff --git a/dts/upstream/src/arm64/rockchip/rk3588-rock-5b.dts b/dts/upstream/src/arm64/rockchip/rk3588-rock-5b.dts
-index a0e303c3a1..1b50d35d12 100644
+index a0e303c3a1..a5c90db974 100644
 --- a/dts/upstream/src/arm64/rockchip/rk3588-rock-5b.dts
 +++ b/dts/upstream/src/arm64/rockchip/rk3588-rock-5b.dts
 @@ -4,6 +4,7 @@
@@ -60249,10 +60283,18 @@ index a0e303c3a1..1b50d35d12 100644
  	};
  
  	chosen {
-@@ -774,3 +779,75 @@
+@@ -774,3 +779,81 @@
  &usb_host2_xhci {
  	status = "okay";
  };
++
++&vop {
++	status = "okay";
++};
++
++&vop_mmu {
++	status = "okay";
++};
 +
 + /* vp0 & vp1 splice for 8K output */
 + &vp0 {
@@ -60289,7 +60331,6 @@ index a0e303c3a1..1b50d35d12 100644
 +
 +&hdmi0 {
 +	enable-gpios = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
-+	cec-enable = "true";
 +	status = "okay";
 +};
 +
@@ -60313,7 +60354,6 @@ index a0e303c3a1..1b50d35d12 100644
 +	status = "okay";
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&hdmim0_tx1_cec &hdmim0_tx1_hpd &hdmim1_tx1_scl &hdmim1_tx1_sda>;
-+	cec-enable = "true";
 +	enable-gpios = <&gpio4 RK_PA1 GPIO_ACTIVE_HIGH>;
 +};
 + 
@@ -61301,6 +61341,27 @@ index 5519c1430c..752bb714a4 100644
 + };
 + 
 \ No newline at end of file
+diff --git a/dts/upstream/src/arm64/rockchip/rk3588s-pinctrl.dtsi b/dts/upstream/src/arm64/rockchip/rk3588s-pinctrl.dtsi
+index 30db12c4fc..67e1c4ac4a 100644
+--- a/dts/upstream/src/arm64/rockchip/rk3588s-pinctrl.dtsi
++++ b/dts/upstream/src/arm64/rockchip/rk3588s-pinctrl.dtsi
+@@ -578,14 +578,14 @@
+ 		hdmim0_tx0_scl: hdmim0-tx0-scl {
+ 			rockchip,pins =
+ 				/* hdmim0_tx0_scl */
+-				<4 RK_PB7 5 &pcfg_pull_none>;
++				<4 RK_PB7 5 &pcfg_pull_none_drv_level_5>;
+ 		};
+ 
+ 		/omit-if-no-ref/
+ 		hdmim0_tx0_sda: hdmim0-tx0-sda {
+ 			rockchip,pins =
+ 				/* hdmim0_tx0_sda */
+-				<4 RK_PC0 5 &pcfg_pull_none>;
++				<4 RK_PC0 5 &pcfg_pull_none_drv_level_1>;
+ 		};
+ 
+ 		/omit-if-no-ref/
 diff --git a/dts/upstream/src/arm64/rockchip/rk3588s.dtsi b/dts/upstream/src/arm64/rockchip/rk3588s.dtsi
 index 36b1b7acfe..6f3a3c158d 100644
 --- a/dts/upstream/src/arm64/rockchip/rk3588s.dtsi

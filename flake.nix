@@ -26,7 +26,7 @@
         overlays = import ./overlay;
       };
       inherit (pkgs) lib;
-      targetNames = lib.listNixname ./targets;
+      boardNames = lib.listNixname ./boards;
       mypkgs = import ./pkgs/top-level.nix { inherit pkgs; };
       allSystems = [ "x86_64-linux" "aarch64-linux" "riscv64-linux" "aarch64-darwin" "x86_64-darwin" ];
       # Helper function to generate a set of attributes for each system
@@ -36,16 +36,16 @@
       # lib.genAttrs ["foo" "bar"] f 
       # => {foo:(f "foo"); bar:(f "bar")}
       nixosConfigurations = lib.genAttrs
-        targetNames
+        boardNames
         (name: nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = { inherit pkgs mypkgs inputs system; flake = self.outPath; };
-          modules = [ ./targets/${name}.nix ];
+          modules = [ ./boards/${name}.nix ];
         });
       # lib.genAttrs' ["foo" "bar"] k v
       # => {${k "foo"}:(v "foo"); ${k "bar"}:(v "bar")}
       packages.${system} = (lib.genAttrs'
-        targetNames
+        boardNames
         (k: "image-" + k)
         (v: self.nixosConfigurations.${v}.config.system.build.diskoImages))
       // mypkgs;
@@ -107,7 +107,7 @@
         }
       );
     } // (lib.genAttrs'
-      targetNames
+      boardNames
       (k: "image-" + k)
       (v: self.nixosConfigurations.${v}.config.system.build.diskoImages))
     // mypkgs;
